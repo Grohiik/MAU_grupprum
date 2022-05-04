@@ -15,7 +15,7 @@ while current_hour() != "00":
     print(current_hour())
     time.sleep(300)
 
-r = book_room(id, intervaller)
+book_room(id, intervaller)
 
 # Print response
-print(r.text)
+print("DONE")
