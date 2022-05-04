@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime
-from secrets import login_details
 import time
 
 # URLs
@@ -15,7 +14,7 @@ moment = "Plugg"
 flik = "FLIK-0017"
 
 
-def book_room(rooms, intervaller):
+def book_room(login_details, rooms, intervaller):
     # create a session object
     s = requests.Session()
 
@@ -30,7 +29,6 @@ def book_room(rooms, intervaller):
     parameters = {
         "op": op,
         "datum": datetime.today().strftime("%y-%m-%d"),
-        "id": room,
         "typ": typ,
         "moment": moment,
         "flik": flik,
@@ -39,7 +37,9 @@ def book_room(rooms, intervaller):
     for intervall in intervaller:
         parameters["intervall"] = intervall
         for room in rooms:
+            parameters["id"] = room
             r = s.get(f"{url}{bokning}", params=parameters)
             if r.text == "OK":
-                output += f"Booked {room} at intervall {intervall}"
+                output += f"Booked {room} at intervall {intervall}\n"
                 break
+    return output
