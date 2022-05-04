@@ -5,7 +5,7 @@ from secrets import login_details
 
 
 def current_hour():
-    return int(datetime.today().strftime("%H"))
+    return datetime.now().hour
 
 
 rooms = [
@@ -23,9 +23,9 @@ rooms = [
 intervaller = input("Vilka intervall vill du boka? ").split(" ")
 
 # Wait untill new times are released
-# while current_hour() != "00":
-#     print(current_hour())
-#     time.sleep(300)
+while current_hour() != 0:
+    print(current_hour())
+    time.sleep(300)
 
 result = book_room(login_details[0], rooms, intervaller[0:2])
 if len(intervaller) > 2:
