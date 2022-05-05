@@ -23,9 +23,9 @@ rooms = [
 intervaller = input("Vilka intervall vill du boka? ").split(" ")
 
 # Wait untill new times are released
+time.sleep((23 - current_hour()) * 3600)
 while current_hour() != 0:
-    print(current_hour())
-    time.sleep(300)
+    time.sleep(1)
 
 result = book_room(login_details[0], rooms, intervaller[0:2])
 if len(intervaller) > 2:
