@@ -28,7 +28,7 @@ def book_room(login_details, rooms, intervaller):
     # book the room
     parameters = {
         "op": op,
-        "datum": datetime.today().strftime("%y-%m-%d"),
+        "datum": datetime.now().strftime("%y-%m-%d"),
         "typ": typ,
         "moment": moment,
         "flik": flik,
@@ -39,7 +39,15 @@ def book_room(login_details, rooms, intervaller):
         for room in rooms:
             parameters["id"] = room
             r = s.get(f"{url}{bokning}", params=parameters)
+            while (
+                r.text
+                == "Du kan inte boka resurs för en tid som ligger längre fram än tillåtet"
+            ):
+                print("Du är för tidig")
+                r = s.get(f"{url}{bokning}", params=parameters)
+
             if r.text == "OK":
                 output += f"Booked {room} at intervall {intervall}\n"
                 break
+
     return output
