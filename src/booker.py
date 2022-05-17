@@ -14,6 +14,7 @@ moment = "Plugg"
 flik = "FLIK-0017"
 
 
+
 def book_room(login_details, rooms, intervaller):
     # create a session object
     s = requests.Session()
@@ -33,7 +34,7 @@ def book_room(login_details, rooms, intervaller):
         "moment": moment,
         "flik": flik,
     }
-    output = ""
+    output = []
     for intervall in intervaller:
         parameters["intervall"] = intervall
         for room in rooms:
@@ -47,7 +48,7 @@ def book_room(login_details, rooms, intervaller):
                 r = s.get(f"{url}{bokning}", params=parameters)
 
             if r.text == "OK":
-                output += f"Booked {room} at intervall {intervall}\n"
+                output.append({"room": room, "intervall": intervall})
                 break
 
     return output
