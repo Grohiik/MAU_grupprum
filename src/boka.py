@@ -79,8 +79,8 @@ def create_room_booked_event(room, intervall):
 rooms = [
     "NI:C0401",
     "NI:C0301",
-    "NI:C0325",
     "NI:B0321",
+    "NI:C0325",
     "NI:B0305",
     "NI:C0312",
     "NI:C0305",
