@@ -5,21 +5,67 @@ from datetime import datetime
 import pytz
 from secrets import login_details
 
+
 def index_to_time(index):
-    if index == 0:
-        return {"start": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=8, minute=15), "end": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=10, minute=00)}
-    elif index == 1:
-        return {"start": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=10, minute=15), "end": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=13, minute=00)}
-    elif index == 2:
-        return {"start": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=13, minute=15), "end": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=15, minute=00)}
-    elif index == 3:
-        return {"start": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=15, minute=15), "end": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=17, minute=00)}
-    elif index == 4:
-        return {"start": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=17, minute=15), "end": datetime.now().astimezone(pytz.timezone('Europe/Berlin')).replace(hour=20, minute=00)}
+    if index == "0":
+        return {
+            "start": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=8, minute=15),
+            "end": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=10, minute=00),
+        }
+    elif index == "1":
+        return {
+            "start": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=10, minute=15),
+            "end": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=13, minute=00),
+        }
+    elif index == "2":
+        return {
+            "start": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=13, minute=15),
+            "end": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=15, minute=00),
+        }
+    elif index == "3":
+        return {
+            "start": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=15, minute=15),
+            "end": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=17, minute=00),
+        }
+    elif index == "4":
+        return {
+            "start": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=17, minute=15),
+            "end": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=20, minute=00),
+        }
+    else:
+        return {
+            "start": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=23, minute=00),
+            "end": datetime.now()
+            .astimezone(pytz.timezone("Europe/Berlin"))
+            .replace(hour=23, minute=15),
+        }
 
 
 def current_hour():
-    return datetime.now().hour
+    return datetime.now().astimezone(pytz.timezone("Europe/Berlin")).hour
+
 
 def create_room_booked_event(room, intervall):
     e = Event()
@@ -42,6 +88,7 @@ rooms = [
     "NI:C0309",
 ]
 
+
 def book():
     intervaller = input("Vilka intervall vill du boka? ").split(" ")
 
@@ -58,7 +105,8 @@ def book():
             print("Du har inte tillräkligt många konton för att boka så många tider\n")
     return results
 
-def main(): 
+
+def main():
     results = book()
     c = Calendar()
     for result in results:
@@ -67,8 +115,9 @@ def main():
         c.events.add(create_room_booked_event(room, intervall))
 
     print(c.events)
-    with open('calenders/my.ics', 'w') as f:
+    with open("my.ics", "w") as f:
         f.write(str(c))
+
 
 if __name__ == "__main__":
     main()

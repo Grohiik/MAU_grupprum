@@ -14,7 +14,6 @@ moment = "Plugg"
 flik = "FLIK-0017"
 
 
-
 def book_room(login_details, rooms, intervaller):
     # create a session object
     s = requests.Session()
