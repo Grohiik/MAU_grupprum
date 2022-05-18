@@ -115,7 +115,7 @@ def main():
         c.events.add(create_room_booked_event(room, intervall))
 
     print(c.events)
-    with open("my.ics", "w") as f:
+    with open("calender/my.ics", "w") as f:
         f.write(str(c))
 
 
