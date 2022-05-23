@@ -114,28 +114,30 @@ def book(intervaller):
             print("Du har inte tillräkligt många konton för att boka så många tider\n")
     return results
 
-
+# TODO Implement cancel last booking function (after callback)
+# TODO Implement help function for both cancel and booking
 @bot.listener.on_message_event
 async def message(room, message):
     match = botlib.MessageMatch(room, message, bot, PREFIX)
 
     if match.is_not_from_this_bot() and match.prefix() and match.command("book"):
 
-        await bot.api.send_text_message(room.room_id, "".join("Bokar på intervall", (arg for arg in match.args())))
+        await bot.api.send_text_message(
+            room.room_id, "Då Bokar jag vid intervall "+", ".join(arg for arg in match.args()[:-1]) + f"och {match.args()[-1]}"
+        )
         results = book(match.args())
         c = Calendar()
         for result in results:
             room = result["room"]
             intervall = result["intervall"]
             c.events.add(create_room_booked_event(room, intervall))
+            await bot.api.send_text_message(
+                room.room_id, " ".join([result["room"], result["intervall"]])
+            )
 
         print(c.events)
         with open("calender/my.ics", "w") as f:
             f.write(str(c))
-
-        await bot.api.send_text_message(
-            room.room_id, "\n".join(" ".join(booking["room"], booking["intervall"]) for booking in results)
-        )
 
 
 def main():
