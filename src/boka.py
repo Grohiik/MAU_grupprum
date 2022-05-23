@@ -98,9 +98,7 @@ def create_room_booked_event(room, intervall):
 
 
 # TODO implement callback for the waiting untill midnight
-def book():
-    intervaller = input("Vilka intervall vill du boka? ").split(" ")
-
+def book(intervaller):
     # Wait untill new times are released
     time.sleep((23 - current_hour()) * 3600)
     while current_hour() != 0:
@@ -123,7 +121,8 @@ async def message(room, message):
 
     if match.is_not_from_this_bot() and match.prefix() and match.command("book"):
 
-        results = book()
+        await bot.api.send_text_message(room.room_id, "".join("Bokar på intervall", (arg for arg in match.args())))
+        results = book(match.args())
         c = Calendar()
         for result in results:
             room = result["room"]
