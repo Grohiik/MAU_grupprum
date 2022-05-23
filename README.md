@@ -5,7 +5,4 @@
 
 ## Dependencies
 [Requests](https://pypi.org/project/requests/)  
-
-**Probably only one of these**
-[Ical](https://pypi.org/project/icalendar/)  
 [Ics](https://pypi.org/project/ics/)
