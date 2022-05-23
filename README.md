@@ -6,3 +6,4 @@
 ## Dependencies
 [Requests](https://pypi.org/project/requests/)  
 [Ics](https://pypi.org/project/ics/)
+[SimpleMatrixBot](https://pypi.org/project/simplematrixbotlib/)
