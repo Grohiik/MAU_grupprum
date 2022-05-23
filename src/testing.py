@@ -1,29 +1,22 @@
-from datetime import datetime
-import pytz
-from ics import Calendar, Event
-import requests
-import boka
+import simplematrixbotlib as botlib
+from secrets import matrix_bot
 
-# Parse the URL
-url = "https://calendar.kthexiii.com/calendar/Datateknik2020.ics"
-cal = Calendar(requests.get(url).text)
-
-# Print all the events
-timelist = cal.timeline.today()
-for i in timelist:
-    print(
-        i.begin.datetime.astimezone(pytz.timezone("Europe/Berlin")).strftime("%H:%M:%S")
-    )
+creds = botlib.Creds(
+    matrix_bot["homeserver"], matrix_bot["username"], matrix_bot["password"]
+)
+bot = botlib.Bot(creds)
+PREFIX = "!"
 
 
-c = Calendar()
+@bot.listener.on_message_event
+async def echo(room, message):
+    match = botlib.MessageMatch(room, message, bot, PREFIX)
 
-result = {"room": "blub", "intervall": 2}
+    if match.is_not_from_this_bot() and match.prefix() and match.command("echo"):
 
-room = result["room"]
-intervall = result["intervall"]
-c.events.add(boka.create_room_booked_event(room, intervall))
+        await bot.api.send_text_message(
+            room.room_id, " ".join(arg for arg in match.args())
+        )
 
-print(c.events)
-with open("my.ics", "w") as f:
-    f.write(str(c))
+
+bot.run()
