@@ -136,7 +136,7 @@ async def message(matrix_room, message):
             intervall = result["intervall"]
             c.events.add(create_room_booked_event(room, intervall))
             await bot.api.send_text_message(
-                matrix_room.room_id, " ".join([result["room"], result["intervall"]])
+                matrix_room.room_id, " ".join([room, intervall])
             )
 
         print(c.events)
