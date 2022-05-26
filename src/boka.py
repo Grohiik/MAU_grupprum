@@ -117,18 +117,18 @@ def book(intervaller):
 
 # TODO Implement cancel last booking function (after callback)
 # TODO Implement help function for both cancel and booking
+# TODO Input validation
 @bot.listener.on_message_event
 async def message(matrix_room, message):
     match = botlib.MessageMatch(matrix_room, message, bot, PREFIX)
 
     if match.is_not_from_this_bot() and match.prefix() and match.command("book"):
 
+        # Write accepting message
         await bot.api.send_text_message(
-            matrix_room.room_id,
-            "Då Bokar jag vid intervall "
-            + ", ".join(arg for arg in match.args()[:-1])
-            + f"och {match.args()[-1]}",
+            room.room_id, "Då Bokar jag vid intervall "+' och '.join(', '.join(match.args()).rsplit(', ', 1))
         )
+        
         results = book(match.args())
         c = Calendar()
         for result in results:
@@ -139,6 +139,7 @@ async def message(matrix_room, message):
                 matrix_room.room_id, " ".join([room, intervall])
             )
 
+        # Write the new calender to file
         print(c.events)
         with open("calender/my.ics", "w") as f:
             f.write(str(c))
