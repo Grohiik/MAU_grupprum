@@ -6,6 +6,8 @@ from datetime import datetime
 import pytz
 from secrets import login_details
 from secrets import matrix_bot
+import threading
+import asyncio
 
 
 creds = botlib.Creds(
@@ -97,13 +99,17 @@ def create_room_booked_event(room, intervall):
     return e
 
 
-# TODO implement callback for the waiting untill midnight
-def book(intervaller):
+def wait_till_midnight_callback(callback):
+    print(threading.current_thread().name)
     # Wait untill new times are released
-    time.sleep((23 - current_hour()) * 3600)
-    while current_hour() != 0:
-        time.sleep(0.001)
+    # time.sleep((23 - current_hour()) * 3600)
+    # while current_hour() != 0:
+    #     time.sleep(0.001)
 
+    asyncio.run(callback())
+
+
+def book(intervaller):
     # Book the first two intervalls in the list with the first account
     results = book_room(login_details[0], rooms, intervaller[0:2])
     if len(intervaller) > 2:
@@ -115,34 +121,48 @@ def book(intervaller):
     return results
 
 
+async def booking_agent(match):
+    print("1")
+    results = book(match.args())
+    c = Calendar()
+    for result in results:
+        room = result["room"]
+        intervall = result["intervall"]
+        c.events.add(create_room_booked_event(room, intervall))
+        await match._bot.api.send_text_message(
+            match.room.room_id, " ".join([room, intervall])
+        )
+
+    # Write the new calender to file
+    print(c.events)
+    with open("calender/my.ics", "w") as f:
+        f.write(str(c))
+
+
 # TODO Implement cancel last booking function (after callback)
-# TODO Implement help function for both cancel and booking
+# TODO Implement help text for both cancel and booking
 # TODO Input validation
 @bot.listener.on_message_event
 async def message(matrix_room, message):
     match = botlib.MessageMatch(matrix_room, message, bot, PREFIX)
 
     if match.is_not_from_this_bot() and match.prefix() and match.command("book"):
-
         # Write accepting message
         await bot.api.send_text_message(
-            room.room_id, "Då Bokar jag vid intervall "+' och '.join(', '.join(match.args()).rsplit(', ', 1))
+            matrix_room.room_id,
+            "Då Bokar jag vid intervall "
+            + " och ".join(", ".join(match.args()).rsplit(", ", 1)),
         )
-        
-        results = book(match.args())
-        c = Calendar()
-        for result in results:
-            room = result["room"]
-            intervall = result["intervall"]
-            c.events.add(create_room_booked_event(room, intervall))
-            await bot.api.send_text_message(
-                matrix_room.room_id, " ".join([room, intervall])
-            )
+        callback = lambda: booking_agent(match)
+        print(threading.current_thread().name)
+        thread = threading.Thread(target=wait_till_midnight_callback, args=(callback,))
+        thread.start()
 
-        # Write the new calender to file
-        print(c.events)
-        with open("calender/my.ics", "w") as f:
-            f.write(str(c))
+
+    if match.is_not_from_this_bot() and match.prefix() and match.command("echo"):
+        await bot.api.send_text_message(
+            matrix_room.room_id, " ".join(arg for arg in match.args())
+            )
 
 
 def main():

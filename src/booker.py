@@ -38,7 +38,9 @@ def book_room(login_details, rooms, intervaller):
         parameters["intervall"] = intervall
         for room in rooms:
             parameters["id"] = room
+            print("2")
             r = s.get(f"{url}{bokning}", params=parameters)
+            print("3")
             while (
                 r.text
                 == "Du kan inte boka resurs för en tid som ligger längre fram än tillåtet"
