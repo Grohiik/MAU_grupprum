@@ -2,7 +2,8 @@
 
 This is a simple python script I worked on when I studied at Malmö University.  
 It's not very user-friendly, but it should be okay.  
-Apparently you can book group rooms further ahead now than when I wrote this, the implimentation of this is left as an excersise to the reader.
+Apparently you can book group rooms further ahead now than when I wrote this, the implimentation of this is left as an excersise to the reader.  
+If you want to send pull requests with improvments I will probably accept them.
 
 ## Bot
 The code is written to be used with a [Matrix](https://matrix.org/) or [Discord](discord.com/) bot that can be requested to book group rooms.  
@@ -25,7 +26,7 @@ The bot also makes an ics file with the booking it has made. If you sync it on a
 ## env file
 You need a python file with secrets.  
 login details is a list of one or two users.  
-Remove the second element if you only have one account to use, then you can only book two appointments.  
+Remove the second element if you only have one account to use, then you can only book two timeslots.  
 matrix_bot is the details for the matrix bot.  
 discord_token is your token  
 
@@ -50,4 +51,4 @@ discord_token="token"
 
 [SimpleMatrixBot](https://pypi.org/project/simplematrixbotlib/)  
 or  
-[odiscord.py](https://pypi.org/project/discord.py/)
+[discord.py](https://pypi.org/project/discord.py/)
