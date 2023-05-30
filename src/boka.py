@@ -4,8 +4,8 @@ import simplematrixbotlib as botlib
 import time
 from datetime import datetime
 import pytz
-from secrets import login_details
-from secrets import matrix_bot
+from env import login_details
+from env import matrix_bot
 import threading
 import asyncio
 
@@ -100,11 +100,10 @@ def create_room_booked_event(room, intervall):
 
 
 def wait_till_midnight_callback(callback):
-    print(threading.current_thread().name)
     # Wait untill new times are released
-    # time.sleep((23 - current_hour()) * 3600)
-    # while current_hour() != 0:
-    #     time.sleep(0.001)
+    time.sleep((23 - current_hour()) * 3600)
+    while current_hour() != 0:
+        time.sleep(0.001)
 
     asyncio.run(callback())
 
@@ -122,7 +121,6 @@ def book(intervaller):
 
 
 async def booking_agent(match):
-    print("1")
     results = book(match.args())
     c = Calendar()
     for result in results:
@@ -134,7 +132,6 @@ async def booking_agent(match):
         )
 
     # Write the new calender to file
-    print(c.events)
     with open("calender/my.ics", "w") as f:
         f.write(str(c))
 
@@ -154,7 +151,6 @@ async def message(matrix_room, message):
             + " och ".join(", ".join(match.args()).rsplit(", ", 1)),
         )
         callback = lambda: booking_agent(match)
-        print(threading.current_thread().name)
         thread = threading.Thread(target=wait_till_midnight_callback, args=(callback,))
         thread.start()
 
