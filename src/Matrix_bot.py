@@ -27,7 +27,12 @@ async def message(matrix_room, message):
             "Då Bokar jag vid intervall "
             + " och ".join(", ".join(match.args()).rsplit(", ", 1)),
         )
-        callback = lambda: booking_agent(match)
+
+        def send_message(message):
+            bot.api.send_text_message(matrix_room.room_id, message)
+        def callback():
+            booking_agent(match.args(), send_message)
+
         thread = threading.Thread(target=wait_till_midnight_callback, args=(callback,))
         thread.start()
 

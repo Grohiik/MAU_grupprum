@@ -99,7 +99,7 @@ def wait_till_midnight_callback(callback):
     asyncio.run(callback())
 
 
-def book(intervaller):
+def book(intervaller, send_message: callable):
     # Book the first two intervalls in the list with the first account
     results = book_room(login_details[0], rooms, intervaller[0:2])
     if len(intervaller) > 2:
@@ -107,19 +107,19 @@ def book(intervaller):
             # Book the two next times with the second account
             results += book_room(login_details[1], rooms, intervaller[2:4])
         else:
-            print("Du har inte tillräkligt många konton för att boka så många tider\n")
+            send_message("Du har inte tillräkligt många konton för att boka så många tider\n")
     return results
 
 
-async def booking_agent(match):
-    results = book(match.args())
+async def booking_agent(intervalls: list[str], send_message: callable):
+    results = book(intervalls, send_message)
     c = Calendar()
     for result in results:
         room = result["room"]
         intervall = result["intervall"]
         c.events.add(create_room_booked_event(room, intervall))
-        await match._bot.api.send_text_message(
-            match.room.room_id, " ".join([room, intervall])
+        await send_message(
+            " ".join([room, intervall])
         )
 
     # Write the new calender to file
